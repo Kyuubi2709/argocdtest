@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  generateName: nimbleminer-
+  labels:
+    app: nimbleminer
+spec:
+  selector:
+    matchLabels:
+      app: nimbleminer
+  template:
+    metadata:
+      labels:
+        app: nimbleminer
+    spec:  
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+        - 8.8.8.8
+        - 1.1.1.1          
+      containers:
+      - name: nimbleminer
+        image: kyuubi2709/nimble-miner-docker:latest
+        env:
+          - name: NVIDIA_VISIBLE_DEVICES
+            value: all
+          - name: TMUX
+            value: "true"  # Ensure the value is in quotes
+        resources:
+          limits:
+            nvidia.com/gpu: 1  # Allocate 1 GPU
+        ports:
+          - containerPort: 80
+          - containerPort: 8080
+        hostNetwork: true
